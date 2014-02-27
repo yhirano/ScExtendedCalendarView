@@ -1,6 +1,8 @@
 <resources>
 
-    <string name="app_name">ExtendedCalendarView</string>
+    <string name="empty_string" />
+
+    <!-- Week days (short) -->
     <string name="monday">MON</string>
     <string name="tuesday">TUE</string>
     <string name="wednesday">WED</string>
@@ -8,5 +10,8 @@
     <string name="friday">FRI</string>
     <string name="saturday">SAT</string>
     <string name="sunday">SUN</string>
+
+    <!-- Other strings -->
+    <string name="month_year">%1$s %2$d</string>
 
 </resources>

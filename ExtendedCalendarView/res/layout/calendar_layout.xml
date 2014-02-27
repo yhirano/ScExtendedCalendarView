@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/calendar_month_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/month_prev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/empty_string"
+            android:src="@drawable/navigation_previous_item" />
+
+        <TextView
+            android:id="@+id/month_textview"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageButton
+            android:id="@+id/month_next_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/empty_string"
+            android:src="@drawable/navigation_next_item" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/calendar_gridView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="true"
+        android:horizontalSpacing="4dp"
+        android:numColumns="7"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:verticalSpacing="4dp" >
+    </GridView>
+
+</LinearLayout>
