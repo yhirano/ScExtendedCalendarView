@@ -7,66 +7,17 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/day_textView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="32dp"
         android:layout_marginLeft="4dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
+        android:id="@+id/day_events_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/quickcontact_badge_overlay_normal_light" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/purple" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/green" />
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/orange" />
-
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/red" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:contentDescription="@string/empty_string"
-            android:src="@drawable/blue" />
-    </LinearLayout>
+        android:layout_height="32dp"
+        android:gravity="bottom"
+        android:orientation="vertical" />
 
 </LinearLayout>

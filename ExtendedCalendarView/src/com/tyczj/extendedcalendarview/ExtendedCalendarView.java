@@ -9,12 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
@@ -23,12 +20,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ExtendedCalendarView extends FrameLayout implements OnItemClickListener, OnCreateContextMenuListener,
-		OnClickListener {
+public class ExtendedCalendarView extends FrameLayout implements OnItemClickListener, OnClickListener {
 
 	private Context context;
 	private OnDayClickListener dayListener;
-	private OnDayContextMenuListener contextListener;
 
 	private LinearLayout calendarLayout;
 	private LinearLayout calendarMonthLayout;
@@ -40,11 +35,7 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 	private CalendarAdapter mAdapter;
 
 	public interface OnDayClickListener {
-		public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day);
-	}
-
-	public interface OnDayContextMenuListener {
-		public void onDayContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo);
+		public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, CalendarDay day);
 	}
 
 	public ExtendedCalendarView(Context context) {
@@ -92,7 +83,7 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if (dayListener != null) {
-			Day d = (Day) mAdapter.getItem(position);
+			CalendarDay d = (CalendarDay) mAdapter.getItem(position);
 			if (d.getDay() != 0) {
 				dayListener.onDayClicked(parent, view, position, id, d);
 			}
@@ -107,24 +98,6 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 		if (calendarGridView != null) {
 			dayListener = listener;
 			calendarGridView.setOnItemClickListener(this);
-		}
-	}
-
-	/**
-	 * @param contextListener
-	 *            Set a context menu for days of the month
-	 */
-	public void setOnCreateContextMenuListener(OnDayContextMenuListener contextListener) {
-		if (calendarGridView != null) {
-			this.contextListener = contextListener;
-			calendarGridView.setOnCreateContextMenuListener(this);
-		}
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if (contextListener != null) {
-			contextListener.onDayContextMenu(menu, v, menuInfo);
 		}
 	}
 
@@ -153,8 +126,8 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 		if (monthTextView != null) {
 			monthTextView.setText(context.getResources().getString(R.string.month_year,
 					cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), cal.get(Calendar.YEAR)));
-			refreshCalendar();
 		}
+		refreshCalendar();
 	}
 
 	/**
@@ -162,7 +135,16 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 	 */
 	public void refreshCalendar() {
 		mAdapter.refreshDays();
-		mAdapter.notifyDataSetChanged();
+		// mAdapter.notifyDataSetChanged();
+	}
+
+	public CalendarEventsSource getCalendarEventsSource() {
+		return mAdapter.getCalendarEventsSource();
+	}
+
+	public void setCalendarEventsSource(CalendarEventsSource calendarEventsSource) {
+		mAdapter.setCalendarEventsSource(calendarEventsSource);
+		rebuildCalendar();
 	}
 
 	/**
