@@ -5,22 +5,21 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 public class CalendarAdapter extends BaseAdapter {
-
-	private static final int EVENTS_VISIBLE_MAX = 4;
 
 	Context context;
 	Calendar cal;
@@ -77,9 +76,12 @@ public class CalendarAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		View v = convertView;
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		int eventsRowElements = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? context
+				.getResources().getInteger(R.integer.EVENTS_ROW_MAX_P) : context.getResources().getInteger(
+				R.integer.EVENTS_ROW_MAX_L);
 
 		if (position >= 0 && position < 7) {
-			v = inflater.inflate(R.layout.day_of_week, null);
+			v = (LinearLayout) inflater.inflate(R.layout.day_of_week, null);
 			TextView dayTextView = (TextView) v.findViewById(R.id.day_of_week_textView);
 			dayTextView.setGravity(Gravity.CENTER);
 
@@ -120,11 +122,11 @@ public class CalendarAdapter extends BaseAdapter {
 				break;
 			}
 		} else {
-			v = inflater.inflate(R.layout.day_view, null);
+			v = inflater.inflate(R.layout.day_view, parent, false);
 
 			TextView dayTV = (TextView) v.findViewById(R.id.day_textView);
 			LinearLayout rl = (LinearLayout) v.findViewById(R.id.rl);
-			LinearLayout dayEventsLayout = (LinearLayout) v.findViewById(R.id.day_events_layout);
+			TableLayout dayEventsLayout = (TableLayout) v.findViewById(R.id.day_events_layout);
 
 			dayTV.setVisibility(View.VISIBLE);
 			rl.setVisibility(View.VISIBLE);
@@ -134,45 +136,18 @@ public class CalendarAdapter extends BaseAdapter {
 			if (day.getEventsCount() > 0) {
 				dayEventsLayout.setVisibility(View.VISIBLE);
 
-				int maxWidth = 0;
-				int widthSoFar = 0;
-				int widthMeasureSpec = MeasureSpec.makeMeasureSpec(LayoutParams.MATCH_PARENT, MeasureSpec.EXACTLY);
-				int heightMeasureSpec = MeasureSpec.makeMeasureSpec(LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY);
-				widthMeasureSpec = MeasureSpec.UNSPECIFIED;
-				heightMeasureSpec = MeasureSpec.UNSPECIFIED;
-
-				LinearLayout ll = new LinearLayout(context);
-				ll.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				dayEventsLayout.addView(ll);
-				ll.measure(widthMeasureSpec, heightMeasureSpec);
-				maxWidth = ll.getMeasuredWidth();
+				TableRow tr = new TableRow(context);
 
 				for (int dec = 0; dec < day.getEventsCount(); dec++) {
 					CalendarEvent event = day.getEvents().get(dec);
-					ImageView iv = (ImageView) inflater.inflate(R.layout.event_marker, ll, false);
+					ImageView iv = (ImageView) inflater.inflate(R.layout.event_marker, tr, false);
 					iv.setBackgroundColor(event.getColor());
-					iv.measure(widthMeasureSpec, heightMeasureSpec);
-					int ivWidth = iv.getMeasuredWidth();
+					tr.addView(iv);
 
-					if (widthSoFar + ivWidth > maxWidth) {
-						ll = new LinearLayout(context);
-						ll.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-						dayEventsLayout.addView(ll);
-						ll.measure(widthMeasureSpec, heightMeasureSpec);
-						maxWidth = ll.getMeasuredWidth();
+					if (tr.getChildCount() == eventsRowElements || dec + 1 == day.getEventsCount()) {
+						dayEventsLayout.addView(tr);
+						tr = new TableRow(context);
 					}
-
-					ll.addView(iv);
-					widthSoFar = widthSoFar + iv.getMeasuredWidth();
-				}
-
-				if (day.getEventsCount() > EVENTS_VISIBLE_MAX) {
-					// ImageView iv = (ImageView)
-					// inflater.inflate(R.layout.event_marker, dayEventsLayout,
-					// false);
-					// iv.setLayoutParams(new ViewGroup.LayoutParams(16, 16));
-					// iv.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_dialog_dialer));
-					// dayEventsLayout.addView(iv);
 				}
 			} else {
 				dayEventsLayout.setVisibility(View.INVISIBLE);

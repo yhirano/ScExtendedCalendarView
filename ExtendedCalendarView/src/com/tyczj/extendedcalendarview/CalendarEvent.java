@@ -1,5 +1,6 @@
 package com.tyczj.extendedcalendarview;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -7,7 +8,9 @@ import java.util.Locale;
 import android.graphics.Color;
 import android.util.Log;
 
-public class CalendarEvent {
+public class CalendarEvent implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private long eventId;
 	private long start;

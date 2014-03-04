@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="EVENTS_ROW_MAX_P">4</integer>
+    <integer name="EVENTS_ROW_MAX_L">8</integer>
+
+</resources>

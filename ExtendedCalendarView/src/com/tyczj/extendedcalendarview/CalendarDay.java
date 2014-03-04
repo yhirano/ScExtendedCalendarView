@@ -1,17 +1,18 @@
 package com.tyczj.extendedcalendarview;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import android.content.Context;
 
-public class CalendarDay {
+public class CalendarDay implements Serializable {
 
-	private Context context;
+	private static final long serialVersionUID = 1L;
+
+	// private Context context;
 	// private int startDay;
 	private long startTime;
 	private long endTime;
@@ -23,7 +24,7 @@ public class CalendarDay {
 	List<CalendarEvent> events = new ArrayList<CalendarEvent>();
 
 	public CalendarDay(Context context, int day, int month, int year) {
-		this.context = context;
+		// this.context = context;
 		this.day = day;
 		this.month = month;
 		this.year = year;
@@ -111,7 +112,7 @@ public class CalendarDay {
 	public List<CalendarEvent> getEvents() {
 		return events;
 	}
-	
+
 	/**
 	 * Get the events count
 	 * 
@@ -119,20 +120,6 @@ public class CalendarDay {
 	 */
 	public int getEventsCount() {
 		return events.size();
-	}
-
-	/**
-	 * Returns a list of all the colors on a day
-	 * 
-	 * @return list of colors
-	 */
-	public Set<Integer> getColors() {
-		Set<Integer> colors = new HashSet<Integer>();
-		for (CalendarEvent event : events) {
-			colors.add(event.getColor());
-		}
-
-		return colors;
 	}
 
 	// public void setAdapter(BaseAdapter adapter) {
