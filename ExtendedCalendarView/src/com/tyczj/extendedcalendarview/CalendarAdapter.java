@@ -200,11 +200,10 @@ public class CalendarAdapter extends BaseAdapter {
 		if (calendarEventsSource != null) {
 			// new EventsRefresher().execute(cal.get(Calendar.MONTH));
 
-			new AsyncTask<Integer, Void, SparseArray<Collection<CalendarEvent>>>() {
+			new AsyncTask<Void, Void, SparseArray<Collection<CalendarEvent>>>() {
 				@Override
-				protected SparseArray<Collection<CalendarEvent>> doInBackground(Integer... params) {
-					int month = params[0];
-					return calendarEventsSource.getEventsByMonth(month);
+				protected SparseArray<Collection<CalendarEvent>> doInBackground(Void... params) {
+					return calendarEventsSource.getEventsByMonth(cal);
 				}
 
 				protected void onPostExecute(SparseArray<Collection<CalendarEvent>> eventsSparseArray) {
@@ -218,7 +217,7 @@ public class CalendarAdapter extends BaseAdapter {
 					}
 					notifyDataSetChanged();
 				}
-			}.execute(cal.get(Calendar.MONTH));
+			}.execute();
 		}
 	}
 
