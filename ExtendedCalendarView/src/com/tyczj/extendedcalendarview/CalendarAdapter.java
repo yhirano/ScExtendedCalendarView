@@ -23,7 +23,7 @@ public class CalendarAdapter extends BaseAdapter {
 
 	Context context;
 	Calendar cal;
-	int firstDayOfWeek = Calendar.SUNDAY - 1; // 0
+	int firstDow = Calendar.SUNDAY - 1; // 0
 	public String[] days;
 	private CalendarEventsSource calendarEventsSource;
 	// OnAddNewEventClick mAddEvent;
@@ -35,7 +35,8 @@ public class CalendarAdapter extends BaseAdapter {
 		this.cal = cal;
 		this.context = context;
 		cal.set(Calendar.DAY_OF_MONTH, 1);
-		this.firstDayOfWeek = firstDayOfWeek - 1;
+		// this.firstDayOfWeek = firstDayOfWeek - 1;
+		this.firstDow = this.cal.getFirstDayOfWeek();
 		refreshDays();
 	}
 
@@ -52,20 +53,6 @@ public class CalendarAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return 0;
-	}
-
-	public int getPrevMonth() {
-		if (cal.get(Calendar.MONTH) == cal.getActualMinimum(Calendar.MONTH)) {
-			cal.set(Calendar.YEAR, cal.get(Calendar.YEAR - 1));
-		} else {
-
-		}
-		int month = cal.get(Calendar.MONTH);
-		if (month == 0) {
-			return month = 11;
-		}
-
-		return month - 1;
 	}
 
 	public int getMonth() {
@@ -85,39 +72,41 @@ public class CalendarAdapter extends BaseAdapter {
 			TextView dayTextView = (TextView) v.findViewById(R.id.day_of_week_textView);
 			dayTextView.setGravity(Gravity.CENTER);
 
-			switch (firstDayOfWeek) {
+			switch (firstDow) {
 			case 1:
+				// Sunday
 				if (position == 0) {
-					dayTextView.setText(R.string.monday);
-				} else if (position == 1) {
-					dayTextView.setText(R.string.tuesday);
-				} else if (position == 2) {
-					dayTextView.setText(R.string.wednesday);
-				} else if (position == 3) {
-					dayTextView.setText(R.string.thursday);
-				} else if (position == 4) {
-					dayTextView.setText(R.string.friday);
-				} else if (position == 5) {
-					dayTextView.setText(R.string.saturday);
-				} else if (position == 6) {
 					dayTextView.setText(R.string.sunday);
+				} else if (position == 1) {
+					dayTextView.setText(R.string.monday);
+				} else if (position == 2) {
+					dayTextView.setText(R.string.tuesday);
+				} else if (position == 3) {
+					dayTextView.setText(R.string.wednesday);
+				} else if (position == 4) {
+					dayTextView.setText(R.string.thursday);
+				} else if (position == 5) {
+					dayTextView.setText(R.string.friday);
+				} else if (position == 6) {
+					dayTextView.setText(R.string.saturday);
 				}
 				break;
 			default:
+				// Monday
 				if (position == 0) {
-					dayTextView.setText(R.string.sunday);
-				} else if (position == 1) {
 					dayTextView.setText(R.string.monday);
-				} else if (position == 2) {
+				} else if (position == 1) {
 					dayTextView.setText(R.string.tuesday);
-				} else if (position == 3) {
+				} else if (position == 2) {
 					dayTextView.setText(R.string.wednesday);
-				} else if (position == 4) {
+				} else if (position == 3) {
 					dayTextView.setText(R.string.thursday);
-				} else if (position == 5) {
+				} else if (position == 4) {
 					dayTextView.setText(R.string.friday);
-				} else if (position == 6) {
+				} else if (position == 5) {
 					dayTextView.setText(R.string.saturday);
+				} else if (position == 6) {
+					dayTextView.setText(R.string.sunday);
 				}
 				break;
 			}
@@ -177,63 +166,34 @@ public class CalendarAdapter extends BaseAdapter {
 		// clear items
 		daysList.clear();
 
-		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH) + 7;
-		int firstDay = (int) cal.get(Calendar.DAY_OF_WEEK);
+		int startDow = cal.get(Calendar.DAY_OF_WEEK);
+		int dayLabels = 7;
+		int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		int emptyDays = ((startDow - firstDow) < 0) ? 6 : (startDow - firstDow);
 		int month = cal.get(Calendar.MONTH);
 		int year = cal.get(Calendar.YEAR);
 		// TimeZone tz = TimeZone.getDefault();
 
 		// figure size of the array
-		if (firstDay == 1) {
-			days = new String[lastDay + (firstDayOfWeek * 6)];
-		} else {
-			days = new String[lastDay + firstDay - (firstDayOfWeek + 1)];
-		}
+		days = new String[dayLabels + emptyDays + maxDays];
 
-		int j = firstDayOfWeek;
-
-		// populate empty days before first real day
-		if (firstDay > 1) {
-			for (j = 0; j < (firstDay - firstDayOfWeek) + 7; j++) {
-				days[j] = "";
-				CalendarDay d = new CalendarDay(context, 0, 0, 0);
-				daysList.add(d);
-			}
-		} else {
-			for (j = 0; j < (firstDayOfWeek * 6) + 7; j++) {
-				days[j] = "";
-				CalendarDay d = new CalendarDay(context, 0, 0, 0);
-				daysList.add(d);
-			}
-			j = firstDayOfWeek * 6 + 1; // sunday => 1, monday => 7
-		}
-
-		// populate days
 		int dayNumber = 1;
-
-		if (j > 0 && daysList.size() > 0 && j != 1) {
-			daysList.remove(j - 1);
-		}
-
-		for (int i = j - 1; i < days.length; i++) {
-			// Day day = new Day(context, dayNumber, month, year);
-			CalendarDay day = new CalendarDay(dayNumber, month, year);
-
-			// Calendar cTemp = Calendar.getInstance();
-			// cTemp.set(year, month, dayNumber);
-			// int startDay = Time.getJulianDay(cTemp.getTimeInMillis(),
-			// TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cTemp.getTimeInMillis())));
-
-			// day.setAdapter(this);
-			// d.setStartDay(startDay);
-
-			days[i] = Integer.toString(dayNumber);
-			dayNumber++;
-			daysList.add(day);
+		for (int i = 0; i < days.length; i++) {
+			if (i < (dayLabels + emptyDays)) {
+				// populate empty days before first real day
+				CalendarDay ed = new CalendarDay(context, 0, 0, 0);
+				days[i] = "";
+				daysList.add(ed);
+			} else {
+				// populate days
+				CalendarDay d = new CalendarDay(dayNumber, month, year);
+				days[i] = Integer.toString(dayNumber);
+				dayNumber++;
+				daysList.add(d);
+			}
 		}
 
 		notifyDataSetChanged();
-
 		refreshEvents();
 	}
 
