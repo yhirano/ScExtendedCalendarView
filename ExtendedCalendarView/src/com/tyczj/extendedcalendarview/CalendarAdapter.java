@@ -23,7 +23,7 @@ public class CalendarAdapter extends BaseAdapter {
 
 	Context context;
 	Calendar cal;
-	int firstDow = Calendar.SUNDAY - 1; // 0
+	int firstDow = 0;
 	public String[] days;
 	private CalendarEventsSource calendarEventsSource;
 	// OnAddNewEventClick mAddEvent;
@@ -31,11 +31,10 @@ public class CalendarAdapter extends BaseAdapter {
 	ArrayList<CalendarDay> daysList = new ArrayList<CalendarDay>();
 	SparseArray<CalendarEvent> eventsOfTheMonth;
 
-	public CalendarAdapter(Context context, Calendar cal, int firstDayOfWeek) {
+	public CalendarAdapter(Context context, Calendar cal) {
 		this.cal = cal;
 		this.context = context;
 		cal.set(Calendar.DAY_OF_MONTH, 1);
-		// this.firstDayOfWeek = firstDayOfWeek - 1;
 		this.firstDow = this.cal.getFirstDayOfWeek();
 		refreshDays();
 	}

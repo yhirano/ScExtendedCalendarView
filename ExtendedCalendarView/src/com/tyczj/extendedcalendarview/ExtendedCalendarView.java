@@ -74,7 +74,7 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 		next.setOnClickListener(this);
 
 		calendarGridView = (GridView) calendarLayout.findViewById(R.id.calendar_gridView);
-		mAdapter = new CalendarAdapter(context, cal, Calendar.MONDAY);
+		mAdapter = new CalendarAdapter(context, cal);
 		calendarGridView.setAdapter(mAdapter);
 
 		addView(calendarLayout);
