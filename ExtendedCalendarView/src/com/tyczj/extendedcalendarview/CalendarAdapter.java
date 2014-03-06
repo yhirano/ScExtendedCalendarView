@@ -19,17 +19,17 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class CalendarAdapter extends BaseAdapter {
+public class CalendarAdapter<T extends Event> extends BaseAdapter {
 
 	Context context;
 	Calendar cal;
 	int firstDow = 0;
 	public String[] days;
-	private CalendarEventsSource calendarEventsSource;
+	private EventsSource<T> calendarEventsSource;
 	// OnAddNewEventClick mAddEvent;
 
-	ArrayList<CalendarDay> daysList = new ArrayList<CalendarDay>();
-	SparseArray<CalendarEvent> eventsOfTheMonth;
+	ArrayList<Day<T>> daysList = new ArrayList<Day<T>>();
+	SparseArray<Event> eventsOfTheMonth;
 
 	public CalendarAdapter(Context context, Calendar cal) {
 		this.cal = cal;
@@ -119,7 +119,7 @@ public class CalendarAdapter extends BaseAdapter {
 			dayTV.setVisibility(View.VISIBLE);
 			rl.setVisibility(View.VISIBLE);
 
-			CalendarDay day = daysList.get(position);
+			Day<T> day = daysList.get(position);
 
 			if (day.getEventsCount() > 0) {
 				dayEventsLayout.setVisibility(View.VISIBLE);
@@ -127,7 +127,7 @@ public class CalendarAdapter extends BaseAdapter {
 				TableRow tr = new TableRow(context);
 
 				for (int dec = 0; dec < day.getEventsCount(); dec++) {
-					CalendarEvent event = day.getEvents().get(dec);
+					Event event = (Event) day.getEvents().get(dec);
 					ImageView iv = (ImageView) inflater.inflate(R.layout.event_marker, tr, false);
 					iv.setBackgroundColor(event.getColor());
 					tr.addView(iv);
@@ -153,11 +153,11 @@ public class CalendarAdapter extends BaseAdapter {
 		return v;
 	}
 
-	public CalendarEventsSource getCalendarEventsSource() {
-		return calendarEventsSource;
+	public EventsSource<T> getCalendarEventsSource() {
+		return this.calendarEventsSource;
 	}
 
-	public void setCalendarEventsSource(CalendarEventsSource calendarEventsSource) {
+	public void setCalendarEventsSource(EventsSource<T> calendarEventsSource) {
 		this.calendarEventsSource = calendarEventsSource;
 	}
 
@@ -180,12 +180,12 @@ public class CalendarAdapter extends BaseAdapter {
 		for (int i = 0; i < days.length; i++) {
 			if (i < (dayLabels + emptyDays)) {
 				// populate empty days before first real day
-				CalendarDay ed = new CalendarDay(context, 0, 0, 0);
+				Day<T> ed = new Day<T>(context, 0, 0, 0);
 				days[i] = "";
 				daysList.add(ed);
 			} else {
 				// populate days
-				CalendarDay d = new CalendarDay(dayNumber, month, year);
+				Day<T> d = new Day<T>(dayNumber, month, year);
 				days[i] = Integer.toString(dayNumber);
 				dayNumber++;
 				daysList.add(d);
@@ -200,16 +200,16 @@ public class CalendarAdapter extends BaseAdapter {
 		if (calendarEventsSource != null) {
 			// new EventsRefresher().execute(cal.get(Calendar.MONTH));
 
-			new AsyncTask<Void, Void, SparseArray<Collection<CalendarEvent>>>() {
+			new AsyncTask<Void, Void, SparseArray<Collection<T>>>() {
 				@Override
-				protected SparseArray<Collection<CalendarEvent>> doInBackground(Void... params) {
+				protected SparseArray<Collection<T>> doInBackground(Void... params) {
 					return calendarEventsSource.getEventsByMonth(cal);
 				}
 
-				protected void onPostExecute(SparseArray<Collection<CalendarEvent>> eventsSparseArray) {
-					for (CalendarDay day : daysList) {
+				protected void onPostExecute(SparseArray<Collection<T>> eventsSparseArray) {
+					for (Day<T> day : daysList) {
 						if (day.getDay() > 0) {
-							Collection<CalendarEvent> eventsCollection = eventsSparseArray.get(day.getDay());
+							Collection<T> eventsCollection = eventsSparseArray.get(day.getDay());
 							if (eventsCollection != null) {
 								day.addEvents(eventsCollection);
 							}
@@ -236,7 +236,7 @@ public class CalendarAdapter extends BaseAdapter {
 	//
 	// protected void onPostExecute(SparseArray<Collection<CalendarEvent>>
 	// eventsSparseArray) {
-	// for (CalendarDay day : daysList) {
+	// for (CalendarDay<T> day : daysList) {
 	// Collection<CalendarEvent> eventsCollection =
 	// eventsSparseArray.get(day.getDay());
 	// if (eventsCollection != null) {

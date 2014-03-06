@@ -20,10 +20,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ExtendedCalendarView extends FrameLayout implements OnItemClickListener, OnClickListener {
+public class ExtendedCalendarView<T extends Event> extends FrameLayout implements OnItemClickListener, OnClickListener {
 
 	private Context context;
-	private OnDayClickListener dayListener;
+	private OnDayClickListener<T> dayListener;
 
 	private LinearLayout calendarLayout;
 	private LinearLayout calendarMonthLayout;
@@ -32,10 +32,10 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 	private GridView calendarGridView;
 
 	private Calendar cal;
-	private CalendarAdapter mAdapter;
+	private CalendarAdapter<T> mAdapter;
 
-	public interface OnDayClickListener {
-		public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, CalendarDay day);
+	public interface OnDayClickListener<T extends Event> {
+		public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day<T> day);
 	}
 
 	public ExtendedCalendarView(Context context) {
@@ -74,16 +74,17 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 		next.setOnClickListener(this);
 
 		calendarGridView = (GridView) calendarLayout.findViewById(R.id.calendar_gridView);
-		mAdapter = new CalendarAdapter(context, cal);
+		mAdapter = new CalendarAdapter<T>(context, cal);
 		calendarGridView.setAdapter(mAdapter);
 
 		addView(calendarLayout);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if (dayListener != null) {
-			CalendarDay d = (CalendarDay) mAdapter.getItem(position);
+			Day<T> d = (Day<T>) mAdapter.getItem(position);
 			if (d.getDay() != 0) {
 				dayListener.onDayClicked(parent, view, position, id, d);
 			}
@@ -94,7 +95,7 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 	 * @param listener
 	 *            Set a listener for when you press on a day in the month
 	 */
-	public void setOnDayClickListener(OnDayClickListener listener) {
+	public void setOnDayClickListener(OnDayClickListener<T> listener) {
 		if (calendarGridView != null) {
 			dayListener = listener;
 			calendarGridView.setOnItemClickListener(this);
@@ -138,11 +139,11 @@ public class ExtendedCalendarView extends FrameLayout implements OnItemClickList
 		// mAdapter.notifyDataSetChanged();
 	}
 
-	public CalendarEventsSource getCalendarEventsSource() {
+	public EventsSource<T> getCalendarEventsSource() {
 		return mAdapter.getCalendarEventsSource();
 	}
 
-	public void setCalendarEventsSource(CalendarEventsSource calendarEventsSource) {
+	public void setCalendarEventsSource(EventsSource<T> calendarEventsSource) {
 		mAdapter.setCalendarEventsSource(calendarEventsSource);
 		rebuildCalendar();
 	}
