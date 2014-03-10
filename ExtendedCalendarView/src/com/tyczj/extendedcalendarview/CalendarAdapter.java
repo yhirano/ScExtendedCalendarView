@@ -3,9 +3,11 @@ package com.tyczj.extendedcalendarview;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -26,16 +28,18 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 	int firstDow = 0;
 	public String[] days;
 	private EventsSource<T> calendarEventsSource;
+	private boolean duplicatesAvoided;
 	// OnAddNewEventClick mAddEvent;
 
 	ArrayList<Day<T>> daysList = new ArrayList<Day<T>>();
 	SparseArray<Event> eventsOfTheMonth;
 
-	public CalendarAdapter(Context context, Calendar cal) {
+	public CalendarAdapter(Context context, Calendar cal, boolean duplicatesVisibility) {
 		this.cal = cal;
 		this.context = context;
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		this.firstDow = this.cal.getFirstDayOfWeek();
+		this.setDuplicatesAvoided(duplicatesVisibility);
 		refreshDays();
 	}
 
@@ -126,13 +130,22 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 
 				TableRow tr = new TableRow(context);
 
+				List<ImageView> ivList = new ArrayList<ImageView>();
 				for (int dec = 0; dec < day.getEventsCount(); dec++) {
 					Event event = (Event) day.getEvents().get(dec);
+					if (areDuplicatesAvoided() && listContainsColor(ivList, event.getColor())) {
+						continue;
+					}
 					ImageView iv = (ImageView) inflater.inflate(R.layout.event_marker, tr, false);
 					iv.setBackgroundColor(event.getColor());
+					ivList.add(iv);
+				}
+
+				for (int dec = 0; dec < ivList.size(); dec++) {
+					ImageView iv = ivList.get(dec);
 					tr.addView(iv);
 
-					if (tr.getChildCount() == eventsRowElements || dec + 1 == day.getEventsCount()) {
+					if (tr.getChildCount() == eventsRowElements || dec + 1 == ivList.size()) {
 						dayEventsLayout.addView(tr);
 						tr = new TableRow(context);
 					}
@@ -219,6 +232,32 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 				}
 			}.execute();
 		}
+	}
+
+	private boolean listContainsColor(List<ImageView> list, int color) {
+		for (ImageView iv : list) {
+			if (((ColorDrawable) iv.getBackground()).getColor() == color) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if duplicates are avoided, else false.
+	 */
+	public boolean areDuplicatesAvoided() {
+		return duplicatesAvoided;
+	}
+
+	/**
+	 * Default is false
+	 * 
+	 * @param duplicatesAvoided
+	 *            the duplicatesAvoided to set
+	 */
+	public void setDuplicatesAvoided(boolean duplicatesAvoided) {
+		this.duplicatesAvoided = duplicatesAvoided;
 	}
 
 	// public abstract static class OnAddNewEventClick{

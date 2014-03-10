@@ -30,6 +30,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	private ImageButton next, prev;
 	private TextView monthTextView;
 	private GridView calendarGridView;
+	private boolean duplicatesAvoided = false;
 
 	private Calendar cal;
 	private CalendarAdapter<T> mAdapter;
@@ -74,7 +75,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 		next.setOnClickListener(this);
 
 		calendarGridView = (GridView) calendarLayout.findViewById(R.id.calendar_gridView);
-		mAdapter = new CalendarAdapter<T>(context, cal);
+		mAdapter = new CalendarAdapter<T>(context, cal, areDuplicatesAvoided());
 		calendarGridView.setAdapter(mAdapter);
 
 		addView(calendarLayout);
@@ -221,6 +222,24 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	 */
 	public void setNextMonthButtonImageDrawable(Drawable drawable) {
 		next.setImageDrawable(drawable);
+	}
+
+	/**
+	 * @return true if duplicates are avoided, else false
+	 */
+	public boolean areDuplicatesAvoided() {
+		return duplicatesAvoided;
+	}
+
+	/**
+	 * Default is false
+	 * 
+	 * @param duplicatesAvoided
+	 *            the duplicatesAvoided to set
+	 */
+	public void setDuplicatesAvoided(boolean duplicatesAvoided) {
+		this.duplicatesAvoided = duplicatesAvoided;
+		mAdapter.setDuplicatesAvoided(duplicatesAvoided);
 	}
 
 }
