@@ -29,8 +29,9 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	private LinearLayout calendarMonthLayout;
 	private ImageButton next, prev;
 	private TextView monthTextView;
-	private GridView calendarGridView;
+	private int todayColor;
 	private boolean duplicatesAvoided = false;
+	private GridView calendarGridView;
 
 	private Calendar cal;
 	private CalendarAdapter<T> mAdapter;
@@ -222,6 +223,21 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	 */
 	public void setNextMonthButtonImageDrawable(Drawable drawable) {
 		next.setImageDrawable(drawable);
+	}
+
+	/**
+	 * @return the todayColor
+	 */
+	public int getTodayColor() {
+		return todayColor;
+	}
+
+	/**
+	 * @param todayColor the todayColor to set
+	 */
+	public void setTodayColor(int todayColor) {
+		this.todayColor = todayColor;
+		mAdapter.setTodayColor(todayColor);
 	}
 
 	/**

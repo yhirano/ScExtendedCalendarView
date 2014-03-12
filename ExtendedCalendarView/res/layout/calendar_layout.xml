@@ -7,7 +7,8 @@
     <LinearLayout
         android:id="@+id/calendar_month_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="48dp"
+        android:gravity="center_vertical" >
 
         <ImageButton
             android:id="@+id/month_prev_btn"

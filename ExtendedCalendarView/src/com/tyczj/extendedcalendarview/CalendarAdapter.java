@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.SparseArray;
@@ -25,19 +28,22 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 
 	Context context;
 	Calendar cal;
+	Calendar today;
 	int firstDow = 0;
 	public String[] days;
 	private EventsSource<T> calendarEventsSource;
 	private boolean duplicatesAvoided;
+	private int todayColor;
 	// OnAddNewEventClick mAddEvent;
 
 	ArrayList<Day<T>> daysList = new ArrayList<Day<T>>();
 	SparseArray<Event> eventsOfTheMonth;
 
 	public CalendarAdapter(Context context, Calendar cal, boolean duplicatesVisibility) {
-		this.cal = cal;
 		this.context = context;
-		cal.set(Calendar.DAY_OF_MONTH, 1);
+		this.cal = cal;
+		this.cal.set(Calendar.DAY_OF_MONTH, 1);
+		today = Calendar.getInstance(Locale.getDefault());
 		this.firstDow = this.cal.getFirstDayOfWeek();
 		this.setDuplicatesAvoided(duplicatesVisibility);
 		refreshDays();
@@ -62,6 +68,7 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 		return cal.get(Calendar.MONTH);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		View v = convertView;
@@ -114,16 +121,23 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 				break;
 			}
 		} else {
-			v = inflater.inflate(R.layout.day_view, parent, false);
+			Day<T> day = daysList.get(position);
 
+			v = inflater.inflate(R.layout.day_view, parent, false);
 			TextView dayTV = (TextView) v.findViewById(R.id.day_textView);
 			LinearLayout rl = (LinearLayout) v.findViewById(R.id.rl);
 			TableLayout dayEventsLayout = (TableLayout) v.findViewById(R.id.day_events_layout);
 
+			if (cal.get(Calendar.YEAR) == today.get(Calendar.YEAR) && cal.get(Calendar.MONTH) == today.get(Calendar.MONTH)
+					&& day.getDay() == today.get(Calendar.DAY_OF_MONTH)) {
+				// v.setBackgroundColor(todayColor);
+				dayTV.setTextColor(todayColor);
+				dayTV.setTypeface(null, Typeface.BOLD);
+				dayTV.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+			}
+
 			dayTV.setVisibility(View.VISIBLE);
 			rl.setVisibility(View.VISIBLE);
-
-			Day<T> day = daysList.get(position);
 
 			if (day.getEventsCount() > 0) {
 				dayEventsLayout.setVisibility(View.VISIBLE);
@@ -258,6 +272,14 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 	 */
 	public void setDuplicatesAvoided(boolean duplicatesAvoided) {
 		this.duplicatesAvoided = duplicatesAvoided;
+	}
+
+	/**
+	 * @param todayColor
+	 *            the todayColor to set
+	 */
+	public void setTodayColor(int todayColor) {
+		this.todayColor = todayColor;
 	}
 
 	// public abstract static class OnAddNewEventClick{
