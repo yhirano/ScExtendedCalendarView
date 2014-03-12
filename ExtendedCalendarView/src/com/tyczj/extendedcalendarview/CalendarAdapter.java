@@ -33,7 +33,7 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 	public String[] days;
 	private EventsSource<T> calendarEventsSource;
 	private boolean duplicatesAvoided;
-	private int todayColor;
+	private Integer todayColor = null;
 	// OnAddNewEventClick mAddEvent;
 
 	ArrayList<Day<T>> daysList = new ArrayList<Day<T>>();
@@ -68,7 +68,6 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 		return cal.get(Calendar.MONTH);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		View v = convertView;
@@ -128,8 +127,8 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 			LinearLayout rl = (LinearLayout) v.findViewById(R.id.rl);
 			TableLayout dayEventsLayout = (TableLayout) v.findViewById(R.id.day_events_layout);
 
-			if (cal.get(Calendar.YEAR) == today.get(Calendar.YEAR) && cal.get(Calendar.MONTH) == today.get(Calendar.MONTH)
-					&& day.getDay() == today.get(Calendar.DAY_OF_MONTH)) {
+			if (todayColor != null && cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+					&& cal.get(Calendar.MONTH) == today.get(Calendar.MONTH) && day.getDay() == today.get(Calendar.DAY_OF_MONTH)) {
 				// v.setBackgroundColor(todayColor);
 				dayTV.setTextColor(todayColor);
 				dayTV.setTypeface(null, Typeface.BOLD);
