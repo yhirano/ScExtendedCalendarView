@@ -6,6 +6,8 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -29,7 +31,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	private LinearLayout calendarMonthLayout;
 	private ImageButton next, prev;
 	private TextView monthTextView;
-	private int todayColor;
+	private Integer todayColor;
 	private boolean duplicatesAvoided = false;
 	private GridView calendarGridView;
 
@@ -150,6 +152,14 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 		rebuildCalendar();
 	}
 
+	public int adjustAlpha(int color, float factor) {
+		int alpha = Math.round(Color.alpha(color) * factor);
+		int red = Color.red(color);
+		int green = Color.green(color);
+		int blue = Color.blue(color);
+		return Color.argb(alpha, red, green, blue);
+	}
+
 	/**
 	 * @param color
 	 *            Sets the background color of the month bar
@@ -228,16 +238,18 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	/**
 	 * @return the todayColor
 	 */
-	public int getTodayColor() {
+	public Integer getTodayColor() {
 		return todayColor;
 	}
 
 	/**
-	 * @param todayColor the todayColor to set
+	 * @param todayColor
+	 *            the todayColor to set
 	 */
 	public void setTodayColor(int todayColor) {
 		this.todayColor = todayColor;
 		mAdapter.setTodayColor(todayColor);
+		calendarGridView.setSelector(new ColorDrawable(adjustAlpha(todayColor, 0.5f)));
 	}
 
 	/**

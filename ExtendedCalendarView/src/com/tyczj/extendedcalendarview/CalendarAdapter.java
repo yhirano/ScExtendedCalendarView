@@ -16,6 +16,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,7 +135,9 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 					&& cal.get(Calendar.MONTH) == today.get(Calendar.MONTH) && day.getDay() == today.get(Calendar.DAY_OF_MONTH)) {
 				GradientDrawable drawable = new GradientDrawable();
 				drawable.setColor(Color.WHITE);
-				drawable.setStroke(3, todayColor);
+				float sizeDp = 3f;
+				int sizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeDp, context.getResources().getDisplayMetrics());;
+				drawable.setStroke(sizePx, todayColor);
 				setBg(v, drawable);
 			}
 

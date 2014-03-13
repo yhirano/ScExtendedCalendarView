@@ -43,6 +43,7 @@
         android:choiceMode="singleChoice"
         android:drawSelectorOnTop="true"
         android:horizontalSpacing="4dp"
+        android:listSelector="@android:color/transparent"
         android:numColumns="7"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
