@@ -6,12 +6,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Paint;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -129,10 +132,10 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 
 			if (todayColor != null && cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)
 					&& cal.get(Calendar.MONTH) == today.get(Calendar.MONTH) && day.getDay() == today.get(Calendar.DAY_OF_MONTH)) {
-				// v.setBackgroundColor(todayColor);
-				dayTV.setTextColor(todayColor);
-				dayTV.setTypeface(null, Typeface.BOLD);
-				dayTV.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+				GradientDrawable drawable = new GradientDrawable();
+				drawable.setColor(Color.WHITE);
+				drawable.setStroke(3, todayColor);
+				setBg(v, drawable);
 			}
 
 			dayTV.setVisibility(View.VISIBLE);
@@ -279,6 +282,16 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 	 */
 	public void setTodayColor(int todayColor) {
 		this.todayColor = todayColor;
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@SuppressWarnings("deprecation")
+	private void setBg(View layout, Drawable drawable) {
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			layout.setBackgroundDrawable(drawable);
+		} else {
+			layout.setBackground(drawable);
+		}
 	}
 
 	// public abstract static class OnAddNewEventClick{
