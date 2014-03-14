@@ -249,6 +249,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	public void setTodayColor(int todayColor) {
 		this.todayColor = todayColor;
 		mAdapter.setTodayColor(todayColor);
+		monthTextView.setTextColor(todayColor);
 		calendarGridView.setSelector(new ColorDrawable(adjustAlpha(todayColor, 0.5f)));
 	}
 
