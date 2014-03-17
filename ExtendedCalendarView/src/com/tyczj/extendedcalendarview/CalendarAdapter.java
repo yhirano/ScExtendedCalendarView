@@ -9,6 +9,9 @@ import java.util.Locale;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -136,7 +139,9 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 				GradientDrawable drawable = new GradientDrawable();
 				drawable.setColor(Color.WHITE);
 				float sizeDp = 3f;
-				int sizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeDp, context.getResources().getDisplayMetrics());;
+				int sizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeDp, context.getResources()
+						.getDisplayMetrics());
+				;
 				drawable.setStroke(sizePx, todayColor);
 				setBg(v, drawable);
 			}
@@ -255,7 +260,20 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 
 	private boolean listContainsColor(List<ImageView> list, int color) {
 		for (ImageView iv : list) {
-			if (((ColorDrawable) iv.getBackground()).getColor() == color) {
+			Integer bgColor;
+
+			ColorDrawable cd = (ColorDrawable) iv.getBackground();
+
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+				Bitmap bitmap = Bitmap.createBitmap(1, 1, Config.ARGB_4444);
+				Canvas canvas = new Canvas(bitmap);
+				cd.draw(canvas);
+				bgColor = bitmap.getPixel(0, 0);
+			} else {
+				bgColor = cd.getColor();
+			}
+
+			if (bgColor == color) {
 				return true;
 			}
 		}
