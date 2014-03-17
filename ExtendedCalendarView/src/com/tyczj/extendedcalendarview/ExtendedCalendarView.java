@@ -106,6 +106,13 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 		}
 	}
 
+	public void goToToday() {
+		Calendar todayCal = Calendar.getInstance(Locale.getDefault());
+		cal.set(Calendar.YEAR, todayCal.get(Calendar.YEAR));
+		cal.set(Calendar.MONTH, todayCal.get(Calendar.MONTH));
+		rebuildCalendar();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		int vId = v.getId();
