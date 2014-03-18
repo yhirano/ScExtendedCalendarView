@@ -1,5 +1,6 @@
 package com.tyczj.extendedcalendarview;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -35,6 +36,8 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	private boolean duplicatesAvoided = false;
 	private GridView calendarGridView;
 
+	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM");
+	
 	private Calendar cal;
 	private CalendarAdapter<T> mAdapter;
 
@@ -72,7 +75,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 
 		monthTextView = (TextView) calendarMonthLayout.findViewById(R.id.month_textview);
 		monthTextView.setText(context.getResources().getString(R.string.month_year,
-				cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), cal.get(Calendar.YEAR)));
+				getMonthName(cal), cal.get(Calendar.YEAR)));
 
 		next = (ImageButton) calendarMonthLayout.findViewById(R.id.month_next_btn);
 		next.setOnClickListener(this);
@@ -137,7 +140,7 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	private void rebuildCalendar() {
 		if (monthTextView != null) {
 			monthTextView.setText(context.getResources().getString(R.string.month_year,
-					cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), cal.get(Calendar.YEAR)));
+					getMonthName(cal), cal.get(Calendar.YEAR)));
 		}
 		refreshCalendar();
 	}
@@ -276,6 +279,10 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 	public void setDuplicatesAvoided(boolean duplicatesAvoided) {
 		this.duplicatesAvoided = duplicatesAvoided;
 		mAdapter.setDuplicatesAvoided(duplicatesAvoided);
+	}
+	
+	private String getMonthName(Calendar cal) {
+		return monthFormat.format(cal.getTime());
 	}
 
 }
