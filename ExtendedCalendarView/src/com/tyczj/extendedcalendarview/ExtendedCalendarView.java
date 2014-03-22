@@ -74,17 +74,33 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 		prev.setOnClickListener(this);
 
 		monthTextView = (TextView) calendarMonthLayout.findViewById(R.id.month_textview);
-		monthTextView.setText(context.getResources().getString(R.string.month_year,
-				getMonthName(cal), cal.get(Calendar.YEAR)));
+		monthTextView.setText(getMonthText());
 
 		next = (ImageButton) calendarMonthLayout.findViewById(R.id.month_next_btn);
 		next.setOnClickListener(this);
 
 		calendarGridView = (GridView) calendarLayout.findViewById(R.id.calendar_gridView);
-		mAdapter = new CalendarAdapter<T>(context, cal, areDuplicatesAvoided());
+		mAdapter = createCalendarAdapter();
 		calendarGridView.setAdapter(mAdapter);
 
 		addView(calendarLayout);
+	}
+
+	protected CalendarAdapter<T> createCalendarAdapter() {
+		return new CalendarAdapter<T>(context, cal, areDuplicatesAvoided());
+	}
+
+	protected GridView getCalendarGridView() {
+		return calendarGridView;
+	}
+
+	protected String getMonthText() {
+		return context.getResources().getString(R.string.month_year,
+				getMonthName(cal), cal.get(Calendar.YEAR));
+	}
+
+	protected Calendar getCal() {
+		return cal;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,10 +153,9 @@ public class ExtendedCalendarView<T extends Event> extends FrameLayout implement
 		}
 	}
 
-	private void rebuildCalendar() {
+	protected void rebuildCalendar() {
 		if (monthTextView != null) {
-			monthTextView.setText(context.getResources().getString(R.string.month_year,
-					getMonthName(cal), cal.get(Calendar.YEAR)));
+			monthTextView.setText(getMonthText());
 		}
 		refreshCalendar();
 	}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -14,9 +15,10 @@ public class Day<T extends Event> implements Serializable {
 
 	// private Context context;
 	// private int startDay;
-	private long startTime;
-	private long endTime;
+	// private long startTime;
+	// private long endTime;
 	// private int monthEndDay;
+	private Calendar cal;
 	private int year;
 	private int month;
 	private int day;
@@ -29,14 +31,8 @@ public class Day<T extends Event> implements Serializable {
 		this.month = month;
 		this.year = year;
 
-		Calendar cal = Calendar.getInstance();
-		cal.set(year, month - 1, day);
-
-		// int end = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-		// cal.set(year, month, end);
-		// TimeZone tz = TimeZone.getDefault();
-		// monthEndDay = Time.getJulianDay(cal.getTimeInMillis(),
-		// TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cal.getTimeInMillis())));
+		this.cal = Calendar.getInstance();
+		this.cal.set(year, month - 1, day);
 	}
 
 	public Day(int day, int month, int year) {
@@ -44,8 +40,8 @@ public class Day<T extends Event> implements Serializable {
 		this.month = month;
 		this.year = year;
 
-		Calendar cal = Calendar.getInstance();
-		cal.set(year, month - 1, day);
+		this.cal = Calendar.getInstance();
+		this.cal.set(year, month - 1, day);
 	}
 
 	// /**
@@ -62,13 +58,13 @@ public class Day<T extends Event> implements Serializable {
 	// return startDay;
 	// }
 
-	public long getStartTime() {
-		return startTime;
-	}
+	// public long getStartTime() {
+	// 	return startTime;
+	// }
 
-	public long getEndTime() {
-		return endTime;
-	}
+	// public long getEndTime() {
+	// 	return endTime;
+	// }
 
 	public int getYear() {
 		return year;
@@ -84,6 +80,10 @@ public class Day<T extends Event> implements Serializable {
 
 	public int getDay() {
 		return day;
+	}
+
+	public Date getDate() {
+		return cal.getTime();
 	}
 
 	/**

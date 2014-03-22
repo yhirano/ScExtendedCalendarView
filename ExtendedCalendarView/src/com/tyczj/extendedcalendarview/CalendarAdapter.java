@@ -184,10 +184,14 @@ public class CalendarAdapter<T extends Event> extends BaseAdapter {
 			} else {
 				dayTV.setVisibility(View.VISIBLE);
 				dayTV.setText(String.valueOf(day.getDay()));
+				onSetDay(v, day);
 			}
 		}
 
 		return v;
+	}
+
+	protected void onSetDay(View dayView, Day<T> day) {
 	}
 
 	public EventsSource<T> getCalendarEventsSource() {
